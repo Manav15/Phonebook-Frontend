@@ -19,7 +19,7 @@ const update = async (id, payload) => {
 
 const remove = async(id) => {
     const response  = await axios.delete(`${baseURL}/${id}`);
-    return response.data
+    return await response.data
 };
 
 export default {

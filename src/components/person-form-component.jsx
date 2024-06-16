@@ -13,8 +13,9 @@ const PersonForm = ({ persons, setPersons }) => {
     const handleSubmit = (event) => {
         if (newName.length > 0 && number.length > 0 && !checkDuplicateNames(newName)) {
             const newPerson = { name: newName, number }
-            phonebookService.create(newPerson);
-            setPersons([...persons, newPerson]);
+            let personResponse = phonebookService.create(newPerson);
+            personResponse.then((res) => res && setPersons([...persons, res]))
+            .catch((err) => console.log("API Error can't add new person"))
         } else if (checkDuplicateNames(newName)) {
             alert(`${newName} is already added to the phonebook`)
         }
