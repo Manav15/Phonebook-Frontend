@@ -1,43 +1,24 @@
-import { useState } from 'react'
-import Search from './components/serch-component';
+import { useEffect, useState } from 'react'
+import Search from './components/search-component';
 import PersonForm from './components/person-form-component';
 import Persons from './components/display-list-component';
+import phoneBookService from './services/phonebook';
 
 const App = () => {
-  const defaultData = [
-    {
-      name: "Ash",
-      number: "88900765"
-    },
-    {
-      name: "Blossum",
-      number: "12345-00987"
-    },
-    {
-      name: "Bubbles",
-      number: "9900786"
-    },
-    {
-      name: "Butter",
-      number: "112450090"
-    },
-    {
-      name: "Cody",
-      number: "1334-0008-976"
-    },
-    {
-      name: "Doby",
-      number: "990087651"
-    },
-    {
-      name: "Drake",
-      number: "66-5543-098"
-    }
-  ];
-
-  const [persons, setPersons] = useState(defaultData)
+  const [persons, setPersons] = useState(null)
   const [searchValue, setSearchValue] = useState('');
   let filteredResults = [];
+
+  const getPersonsData = async() => {
+    let data = await phoneBookService.getAll();
+    setPersons(data)
+  };
+
+  useEffect(() => {
+    if(persons === null) {
+      getPersonsData()
+    }
+  },[]);
 
   if (searchValue !== "") {
     let searchDict = new Map();
@@ -56,7 +37,7 @@ const App = () => {
       <h2>add a new</h2>
       <PersonForm persons={persons} setPersons={setPersons} />
       <h2>Numbers</h2>
-        <Persons persons={persons} filteredResults={filteredResults} searchValue={searchValue} />
+        {persons && <Persons persons={persons} filteredResults={filteredResults} searchValue={searchValue} />}
     </div>
   )
 }

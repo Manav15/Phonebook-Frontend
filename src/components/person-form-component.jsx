@@ -1,4 +1,5 @@
 import { useState } from "react";
+import phonebookService from "../services/phonebook";
 
 const PersonForm = ({ persons, setPersons }) => {
     const [newName, setNewName] = useState('');
@@ -12,7 +13,8 @@ const PersonForm = ({ persons, setPersons }) => {
     const handleSubmit = (event) => {
         if (newName.length > 0 && number.length > 0 && !checkDuplicateNames(newName)) {
             const newPerson = { name: newName, number }
-            setPersons([...persons, newPerson])
+            phonebookService.create(newPerson);
+            setPersons([...persons, newPerson]);
         } else if (checkDuplicateNames(newName)) {
             alert(`${newName} is already added to the phonebook`)
         }
@@ -21,8 +23,6 @@ const PersonForm = ({ persons, setPersons }) => {
         event.preventDefault();
     };
 
-    console.log('name', newName);
-    console.log('number', number);
     return (
         <form>
             <div>
