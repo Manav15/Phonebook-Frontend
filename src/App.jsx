@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import Search from './components/serch-component';
+import PersonForm from './components/person-form-component';
+import Persons from './components/display-list-component';
 
 const App = () => {
   const defaultData = [
@@ -33,28 +36,8 @@ const App = () => {
   ];
 
   const [persons, setPersons] = useState(defaultData)
-  const [newName, setNewName] = useState('');
-  const [number, setNumber] = useState('');
   const [searchValue, setSearchValue] = useState('');
   let filteredResults = [];
-
-  const checkDuplicateNames = (name) => {
-    const isDuplicate = persons.find((person) => person.name.toLowerCase() === name.toLowerCase())
-    return !!isDuplicate
-  }
-
-  const handleSubmit = (event) => {
-    if (newName.length > 0 && number.length > 0 && !checkDuplicateNames(newName)) {
-      const newPerson = { name: newName, number }
-      setPersons([...persons, newPerson])
-    } else if (checkDuplicateNames(newName)) {
-      alert(`${newName} is already added to the phonebook`)
-    }
-    setNewName('')
-    setNumber('')
-    event.preventDefault();
-  };
-
 
   if (searchValue !== "") {
     let searchDict = new Map();
@@ -69,20 +52,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with <span><input type="text" onChange={(e) => setSearchValue(e.target.value)} value={searchValue} /></span></div>
+      <Search searchValue={searchValue} setSearchValue={setSearchValue} />
       <h2>add a new</h2>
-      <form>
-        <div>
-          name: <input type="text" onChange={(e) => setNewName(e.target.value)} value={newName} />
-        </div>
-        <div>number: <input type="text" onChange={(e) => setNumber(e.target.value)} value={number} /></div>
-        <div>
-          <button type="submit" onClick={handleSubmit}>add</button>
-        </div>
-      </form>
+      <PersonForm persons={persons} setPersons={setPersons} />
       <h2>Numbers</h2>
-      {searchValue !== "" ? filteredResults.sort((a, b) => a.name > b.name ? 1 : -1).map((person) => <p key={person.name}>{person.name} {person.number}</p>) :
-        persons.sort((a, b) => a.name > b.name ? 1 : -1).map((person) => <p key={person.name}>{person.name} {person.number}</p>)}
+        <Persons persons={persons} filteredResults={filteredResults} searchValue={searchValue} />
     </div>
   )
 }
